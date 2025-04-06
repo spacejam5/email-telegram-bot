@@ -2,10 +2,9 @@ import imaplib
 import email
 from email.header import decode_header
 from telegram import Bot
-from telegram.helpers import escape_html
 import os
 import datetime
-from telegram.helpers import escape_html
+import html
 
 IMAP_SERVER = 'imap.yandex.ru'
 EMAIL = os.environ.get('EMAIL')
@@ -47,6 +46,8 @@ def check_email():
             new_emails.append((subject, from_name))
         return new_emails
 
+def escape_html(text):
+    return html.escape(text)
 
 def send_notifications(bot, new_emails):
     for subject, from_ in new_emails:

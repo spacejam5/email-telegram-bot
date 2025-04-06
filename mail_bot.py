@@ -17,7 +17,10 @@ def check_email():
         mail.login(EMAIL, PASSWORD)
         mail.select('INBOX')
 
-        status, messages = mail.search(None, 'UNSEEN')
+        # письма за последние сутки
+        yesterday = (datetime.date.today() - datetime.timedelta(days=1)).strftime("%d-%b-%Y")
+        status, messages = mail.search(None, f'(SINCE "{yesterday}")')
+
         email_ids = messages[0].split()
 
         new_emails = []
@@ -25,16 +28,23 @@ def check_email():
             status, msg_data = mail.fetch(e_id, '(RFC822)')
             msg = email.message_from_bytes(msg_data[0][1])
 
+            # декодируем тему письма
             subject, encoding = decode_header(msg["Subject"])[0]
             if isinstance(subject, bytes):
                 subject = subject.decode(encoding or "utf-8")
 
-            from_, encoding = decode_header(msg.get("From"))[0]
-            if isinstance(from_, bytes):
-                from_ = from_.decode(encoding or "utf-8")
+            # декодируем имя отправителя
+            from_header = msg.get("From")
+            from_name, from_addr = email.utils.parseaddr(from_header)
+            from_name, encoding = decode_header(from_name)[0]
+            if isinstance(from_name, bytes):
+                from_name = from_name.decode(encoding or "utf-8")
+            if not from_name:
+                from_name = from_addr  # Если имени нет, используем адрес
 
-            new_emails.append((subject, from_))
+            new_emails.append((subject, from_name))
         return new_emails
+
 
 async def send_notification(bot, subject, from_):
     message = f"📩 <b>Новое письмо</b>\n\n<b>От:</b> {from_}\n<b>Тема:</b> {subject}"

@@ -1,6 +1,10 @@
 from telegram import Bot
 import os
 
-bot = Bot(token=os.environ['BOT_TOKEN'])
-chat_id = int(os.environ['CHAT_ID'])
-bot.send_message(chat_id=chat_id, text="✅ Бот успешно получил доступ и может отправлять сообщения!")
+# Получаем переменные окружения
+TOKEN = os.environ['BOT_TOKEN']
+CHAT_ID = int(os.environ['CHAT_ID'])
+
+# Создаем экземпляр бота и отправляем сообщение
+bot = Bot(token=TOKEN)
+bot.send_message(chat_id=CHAT_ID, text="✅ Бот успешно получил доступ и может отправлять сообщения!")

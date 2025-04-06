@@ -5,6 +5,7 @@ from telegram import Bot
 import os
 import datetime
 import html
+import asyncio
 
 IMAP_SERVER = 'imap.yandex.ru'
 EMAIL = os.environ.get('EMAIL')

@@ -50,7 +50,7 @@ def check_email():
 def escape_html(text):
     return html.escape(text)
 
-def send_notifications(bot, new_emails):
+def send_notification(bot, new_emails):
     for subject, from_ in new_emails:
         subject = escape_html(subject)
         from_ = escape_html(from_)

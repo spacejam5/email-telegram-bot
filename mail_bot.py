@@ -5,6 +5,7 @@ from telegram import Bot
 from telegram.helpers import escape_html
 import os
 import datetime
+from telegram.helpers import escape_html
 
 IMAP_SERVER = 'imap.yandex.ru'
 EMAIL = os.environ.get('EMAIL')
@@ -47,9 +48,12 @@ def check_email():
         return new_emails
 
 
-async def send_notification(bot, subject, from_):
-    message = f"📩 <b>Новое письмо</b>\n\n<b>От:</b> {from_}\n<b>Тема:</b> {subject}"
-    await bot.send_message(chat_id=CHAT_ID, text=message, parse_mode='HTML')
+def send_notifications(bot, new_emails):
+    for subject, from_ in new_emails:
+        subject = escape_html(subject)
+        from_ = escape_html(from_)
+        message = f"📩 <b>Новое письмо за последние сутки</b>\n\n<b>От:</b> {from_}\n<b>Тема:</b> {subject}"
+        bot.send_message(chat_id=CHAT_ID, text=message, parse_mode='HTML')
 
 async def main():
     bot = Bot(token=TOKEN)
